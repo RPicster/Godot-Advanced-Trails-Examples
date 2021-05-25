@@ -1,0 +1,48 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://Scripts/teststage.gd" type="Script" id=1]
+[ext_resource path="res://Scenes/Firedeco.tscn" type="PackedScene" id=2]
+[ext_resource path="res://Scenes/Jelly.tscn" type="PackedScene" id=3]
+
+[sub_resource type="Environment" id=1]
+background_mode = 4
+glow_enabled = true
+glow_levels/1 = true
+glow_levels/2 = true
+glow_levels/4 = true
+
+[node name="Teststage" type="Node2D"]
+script = ExtResource( 1 )
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource( 1 )
+
+[node name="Collider" type="StaticBody2D" parent="."]
+position = Vector2( 608, 192 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Collider"]
+position = Vector2( -608, -192 )
+polygon = PoolVector2Array( 576, 0, 576, 360, 704, 360, 704, 0 )
+
+[node name="Polygon2D" type="Polygon2D" parent="Collider"]
+position = Vector2( -608, -192 )
+color = Color( 0.294118, 0.258824, 0.258824, 1 )
+polygon = PoolVector2Array( 576, 0, 576, 360, 640, 360, 640, 0 )
+
+[node name="Target" type="Position2D" parent="."]
+position = Vector2( 576, 176 )
+
+[node name="can_shoot" type="Timer" parent="."]
+wait_time = 0.1
+one_shot = true
+
+[node name="Firedeco" parent="." instance=ExtResource( 2 )]
+position = Vector2( 256, 320 )
+
+[node name="Firedeco2" parent="Firedeco" instance=ExtResource( 3 )]
+position = Vector2( 0, 0 )
+z_index = 1
+
+[connection signal="timeout" from="can_shoot" to="." method="_on_can_shoot_timeout"]

@@ -1,0 +1,33 @@
+[gd_scene load_steps=7 format=2]
+
+[ext_resource path="res://Scenes/Smoketrail_Static.tscn" type="PackedScene" id=1]
+[ext_resource path="res://Scripts/firedeco.gd" type="Script" id=2]
+[ext_resource path="res://Scenes/spotlight_2.png" type="Texture" id=3]
+
+[sub_resource type="Curve" id=13]
+_data = [ Vector2( 0, 1 ), 0.0, 0.0, 0, 0, Vector2( 0.656618, 0.680505 ), -1.05209, -1.05209, 0, 0, Vector2( 0.747794, 0.355596 ), 0.0, 0.0, 0, 0, Vector2( 0.818382, 0.442238 ), 0.0, 0.0, 0, 0, Vector2( 0.903677, 0.232852 ), 0.0, 0.0, 0, 0, Vector2( 0.956618, 0.348375 ), 0.0, 0.0, 0, 0, Vector2( 1, 0.15343 ), -1.62235, 0.0, 0, 0 ]
+
+[sub_resource type="Gradient" id=2]
+offsets = PoolRealArray( 0, 0.690323, 0.935484, 1 )
+colors = PoolColorArray( 0, 0, 0, 0, 0, 0, 0, 1, 0.672852, 0.197519, 0.065954, 1, 4, 1.82617, 1, 1 )
+
+[sub_resource type="CanvasItemMaterial" id=15]
+blend_mode = 1
+
+[node name="Firedeco" type="Node2D"]
+position = Vector2( 343.2, 218.4 )
+script = ExtResource( 2 )
+
+[node name="Smoketrail" parent="." instance=ExtResource( 1 )]
+width = 50.0
+width_curve = SubResource( 13 )
+wildness = 0.3
+gravity = Vector2( 0, -4 )
+gradient_col = SubResource( 2 )
+tick_speed = 0.02
+
+[node name="Fire" type="Sprite" parent="."]
+modulate = Color( 4, 1.82617, 1, 1 )
+material = SubResource( 15 )
+scale = Vector2( 0.2, 0.2 )
+texture = ExtResource( 3 )

@@ -1,0 +1,330 @@
+[gd_scene load_steps=28 format=2]
+
+[ext_resource path="res://Example_Game/game.gd" type="Script" id=1]
+[ext_resource path="res://Scenes/spotlight_2.png" type="Texture" id=2]
+[ext_resource path="res://Example_Game/tools/engine.gd" type="Script" id=3]
+[ext_resource path="res://Scenes/Smoketrail_Static.tscn" type="PackedScene" id=4]
+[ext_resource path="res://Scripts/firedeco.gd" type="Script" id=5]
+
+[sub_resource type="Shader" id=1]
+code = "shader_type canvas_item;
+
+uniform float foreground_speed = 0.2;
+uniform float background_speed = 0.1;
+uniform sampler2D nebula;
+uniform vec4 nebula_color : hint_color;
+
+void fragment() {
+	vec2 uv_fg = vec2(UV.x+TIME*foreground_speed,UV.y);
+	vec2 uv_bg = vec2(UV.x+TIME*background_speed, UV.y);
+	vec4 neb = texture(nebula, uv_fg);
+	vec4 col = texture(TEXTURE, uv_bg);
+	col *= 3.;
+	vec3 starfield = vec3(step(col.r, 0.95));
+	
+	COLOR = vec4(starfield*2., 1.0);
+	COLOR += neb*nebula_color;
+}"
+
+[sub_resource type="OpenSimplexNoise" id=16]
+
+[sub_resource type="NoiseTexture" id=17]
+seamless = true
+noise = SubResource( 16 )
+
+[sub_resource type="ShaderMaterial" id=18]
+shader = SubResource( 1 )
+shader_param/foreground_speed = 0.1
+shader_param/background_speed = 0.02
+shader_param/nebula_color = Color( 0.356863, 0.207843, 0.411765, 1 )
+shader_param/nebula = SubResource( 17 )
+
+[sub_resource type="OpenSimplexNoise" id=19]
+period = 1.2
+persistence = 1.0
+lacunarity = 4.0
+
+[sub_resource type="NoiseTexture" id=20]
+width = 700
+height = 700
+seamless = true
+noise = SubResource( 19 )
+
+[sub_resource type="Shader" id=21]
+code = "shader_type canvas_item;
+
+uniform float foreground_speed = 0.2;
+uniform float background_speed = 0.1;
+uniform sampler2D nebula;
+uniform vec4 nebula_color : hint_color;
+
+void fragment() {
+	vec2 uv_fg = vec2(UV.x+TIME*foreground_speed,UV.y)*0.4;
+	vec2 uv_bg = vec2(UV.x+TIME*background_speed, UV.y)*0.4;
+	vec4 neb = texture(nebula, uv_fg);
+	vec4 col = texture(TEXTURE, uv_bg);
+	col *= 3.;
+	vec3 starfield = vec3(step(col.r, 0.95));
+	
+	COLOR = vec4(starfield*2., 1.0);
+	COLOR += neb*nebula_color;
+	COLOR = clamp(COLOR, 0., 1.);
+	COLOR.a = starfield.r + nebula_color.b;
+}"
+
+[sub_resource type="OpenSimplexNoise" id=22]
+octaves = 5
+period = 20.4
+persistence = 0.495
+lacunarity = 1.29
+
+[sub_resource type="NoiseTexture" id=23]
+seamless = true
+noise = SubResource( 22 )
+
+[sub_resource type="ShaderMaterial" id=24]
+shader = SubResource( 21 )
+shader_param/foreground_speed = 0.5
+shader_param/background_speed = 0.4
+shader_param/nebula_color = Color( 0, 1, 0.266667, 1 )
+shader_param/nebula = SubResource( 23 )
+
+[sub_resource type="OpenSimplexNoise" id=25]
+seed = -2
+period = 0.1
+persistence = 1.0
+lacunarity = 1.46
+
+[sub_resource type="NoiseTexture" id=26]
+width = 700
+height = 700
+seamless = true
+noise = SubResource( 25 )
+
+[sub_resource type="Environment" id=27]
+background_mode = 4
+glow_enabled = true
+glow_levels/1 = true
+glow_levels/2 = true
+glow_levels/4 = true
+
+[sub_resource type="CanvasItemMaterial" id=28]
+blend_mode = 1
+
+[sub_resource type="CanvasItemMaterial" id=29]
+blend_mode = 1
+
+[sub_resource type="Animation" id=30]
+resource_name = "shoot"
+length = 0.2
+tracks/0/type = "value"
+tracks/0/path = NodePath("Muzzleflash:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.2 ),
+"transitions": PoolRealArray( 0.148651, 1 ),
+"update": 0,
+"values": [ Color( 4, 1.82617, 1, 1 ), Color( 4, 1.82745, 1, 0 ) ]
+}
+
+[sub_resource type="Curve" id=31]
+_data = [ Vector2( 0.138471, 0 ), 0.0, 13.204, 0, 0, Vector2( 0.223684, 0.124549 ), 1.64621, 1.64621, 0, 0, Vector2( 1, 1 ), -0.149378, 0.0, 0, 0 ]
+
+[sub_resource type="Gradient" id=32]
+offsets = PoolRealArray( 0.189702, 0.338753, 1 )
+colors = PoolColorArray( 3.74805, 1, 4, 1, 0.721569, 0.184314, 0.572549, 1, 0.427451, 0.0666667, 0.254902, 1 )
+
+[sub_resource type="Curve" id=13]
+_data = [ Vector2( 0, 1 ), 0.0, 0.0, 0, 0, Vector2( 0.656618, 0.680505 ), -1.05209, -1.05209, 0, 0, Vector2( 0.747794, 0.355596 ), 0.0, 0.0, 0, 0, Vector2( 0.818382, 0.442238 ), 0.0, 0.0, 0, 0, Vector2( 0.903677, 0.232852 ), 0.0, 0.0, 0, 0, Vector2( 0.956618, 0.348375 ), 0.0, 0.0, 0, 0, Vector2( 1, 0.15343 ), -1.62235, 0.0, 0, 0 ]
+
+[sub_resource type="Gradient" id=33]
+offsets = PoolRealArray( 0, 0.690323, 0.935484, 1 )
+colors = PoolColorArray( 0, 0, 0, 0, 0.286133, 0.0126084, 0.206533, 1, 0.664555, 0.065954, 0.672852, 1, 3.88867, 1, 4, 1 )
+
+[sub_resource type="CanvasItemMaterial" id=15]
+blend_mode = 1
+
+[sub_resource type="CanvasItemMaterial" id=34]
+blend_mode = 1
+
+[node name="Game" type="Node2D"]
+script = ExtResource( 1 )
+
+[node name="Background" type="Sprite" parent="."]
+material = SubResource( 18 )
+position = Vector2( 320, 184 )
+z_index = -5
+z_as_relative = false
+texture = SubResource( 20 )
+
+[node name="Foreground" type="Sprite" parent="."]
+material = SubResource( 24 )
+position = Vector2( 320, 184 )
+z_index = 3
+z_as_relative = false
+texture = SubResource( 26 )
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource( 27 )
+
+[node name="PlayerShip" type="Polygon2D" parent="."]
+position = Vector2( 128, 192 )
+color = Color( 0.298039, 0.439216, 0.509804, 1 )
+polygon = PoolVector2Array( -32, 3, -8, 8, 40, 8, 64, 0, 53, -7, 32, -8, 24, -16, 0, -16, -21, -11, -37, -14, -44, -6, -45, 1, -53, 4, -64, 16, -48, 16 )
+
+[node name="Polygon2D3" type="Polygon2D" parent="PlayerShip"]
+z_index = -1
+color = Color( 0.192157, 0.180392, 0.180392, 1 )
+polygon = PoolVector2Array( -59, -7, -40, -9, -40, 4, -59, 2 )
+
+[node name="Polygon2D5" type="Polygon2D" parent="PlayerShip"]
+z_index = 1
+color = Color( 1, 1, 1, 0.227451 )
+polygon = PoolVector2Array( -36, -11, -20, -8, 1, -13, 27, -13, 51, -6, 58, -1, 48, -4, 26, -9, 1, -9, -20, -6, -37, -9 )
+
+[node name="Polygon2D4" type="Polygon2D" parent="PlayerShip"]
+position = Vector2( 88, 11 )
+z_index = -1
+color = Color( 0.192157, 0.180392, 0.180392, 1 )
+polygon = PoolVector2Array( -59, -7, -40, -9, -40, 4, -59, 2 )
+
+[node name="Polygon2D" type="Polygon2D" parent="PlayerShip"]
+color = Color( 0.164706, 0.172549, 0.215686, 1 )
+polygon = PoolVector2Array( 24, -16, 32, -8, 53, -7, 36, -13 )
+
+[node name="Polygon2D2" type="Polygon2D" parent="PlayerShip"]
+color = Color( 0.20294, 0.333923, 0.399414, 1 )
+polygon = PoolVector2Array( -38, -6, -21, -11, -5, -3, 42, -3, 42, 1, 35, 9, 40, 24, 30, 33, 16, 33, 0, 1, -18, 1, -25, -4, -53, 4, -44, -6 )
+
+[node name="Engine" type="Sprite" parent="PlayerShip"]
+modulate = Color( 1, 1.27539, 4, 1 )
+material = SubResource( 28 )
+position = Vector2( -59, -3 )
+scale = Vector2( 0.429688, 0.234375 )
+z_index = -2
+texture = ExtResource( 2 )
+script = ExtResource( 3 )
+
+[node name="Muzzleflash" type="Sprite" parent="PlayerShip"]
+modulate = Color( 4, 1.82745, 1, 0 )
+material = SubResource( 29 )
+position = Vector2( 52, 9 )
+scale = Vector2( 0.355469, 0.195313 )
+z_index = -2
+texture = ExtResource( 2 )
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="PlayerShip"]
+anims/shoot = SubResource( 30 )
+
+[node name="Reload" type="Timer" parent="PlayerShip"]
+wait_time = 0.2
+one_shot = true
+
+[node name="Reload_Bullet" type="Timer" parent="PlayerShip"]
+wait_time = 0.05
+one_shot = true
+
+[node name="KinematicBody2D" type="KinematicBody2D" parent="PlayerShip"]
+visible = false
+collision_mask = 0
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="PlayerShip/KinematicBody2D"]
+polygon = PoolVector2Array( -58, -8, -36, -15, -19, -12, 6, -17, 28, -17, 63, -2, 64, 2, 50, 7, 47, 16, 31, 35, 14, 33, -32, 6, -50, 16, -64, 16 )
+
+[node name="Enemy" type="Polygon2D" parent="."]
+position = Vector2( 541, 173 )
+color = Color( 0.607843, 0.12549, 0.423529, 1 )
+polygon = PoolVector2Array( -17, 32, -32, 13, -37, -6, -32, -25, -21, -40, -3, -49, 19, -48, 39, -29, 42, -11, 30, 7, 22, 15, 19, 22, 22, 29, 28, 32, 34, 39, 31, 47, 16, 51, 2, 47 )
+
+[node name="Polygon2D2" type="Polygon2D" parent="Enemy"]
+color = Color( 0.372549, 0.0588235, 0.2, 1 )
+polygon = PoolVector2Array( -17, 32, -32, 13, -37, -6, -27, 10, -14, 16, 0, 18, 15, 7, 30, -10, 39, -29, 42, -11, 30, 7, 22, 15, 19, 22, 22, 29, 28, 32, 34, 39, 31, 47, 16, 51, 2, 47 )
+
+[node name="Polygon2D3" type="Polygon2D" parent="Enemy"]
+color = Color( 4, 1, 3.90039, 1 )
+polygon = PoolVector2Array( -22, -17, -16, -23, -6, -23, -1, -18, -6, -13, -17, -13 )
+
+[node name="ShootPos" type="Position2D" parent="Enemy/Polygon2D3"]
+position = Vector2( -13, -18 )
+
+[node name="KinematicBody2D" type="KinematicBody2D" parent="Enemy"]
+visible = false
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Enemy/KinematicBody2D"]
+polygon = PoolVector2Array( -38, -7, -31, -25, -22, -40, -4, -49, 19, -47, 38, -29, 44, -11, 28, 10, 32, 40, 29, 48, 13, 51, -4, 44, -23, 26, -34, 11 )
+
+[node name="EnemyPosTween" type="Tween" parent="Enemy"]
+
+[node name="Tails" type="Node2D" parent="Enemy"]
+position = Vector2( 19, 40 )
+
+[node name="Tail" parent="Enemy/Tails" instance=ExtResource( 4 )]
+position = Vector2( 3, -1 )
+z_index = -1
+z_as_relative = false
+points = PoolVector2Array( 0, 0 )
+width_curve = SubResource( 31 )
+texture = null
+texture_mode = 0
+wildness = 4.0
+gravity = Vector2( 4, 5 )
+wind = Vector2( 10, 5 )
+gradient_col = SubResource( 32 )
+max_points = 60
+tick_speed = 0.02
+
+[node name="Tail2" parent="Enemy/Tails" instance=ExtResource( 4 )]
+position = Vector2( 0, -1 )
+z_index = -2
+z_as_relative = false
+points = PoolVector2Array( 0, 0 )
+width_curve = SubResource( 31 )
+texture = null
+texture_mode = 0
+gravity = Vector2( 2, 5 )
+gradient_col = SubResource( 32 )
+max_points = 40
+tick_speed = 0.02
+
+[node name="Firedeco" type="Node2D" parent="Enemy"]
+position = Vector2( -13, -19 )
+script = ExtResource( 5 )
+
+[node name="Smoketrail" parent="Enemy/Firedeco" instance=ExtResource( 4 )]
+width = 50.0
+width_curve = SubResource( 13 )
+wildness = 0.3
+gravity = Vector2( 0, -8 )
+gradient_col = SubResource( 33 )
+tick_speed = 0.02
+
+[node name="Fire" type="Sprite" parent="Enemy/Firedeco"]
+modulate = Color( 4, 1, 3.83008, 1 )
+material = SubResource( 15 )
+scale = Vector2( 0.2, 0.2 )
+texture = ExtResource( 2 )
+
+[node name="ReloadEnemy" type="Timer" parent="Enemy"]
+wait_time = 1.5
+autostart = true
+
+[node name="RandomGlow" type="Sprite" parent="."]
+modulate = Color( 1, 0, 0.45098, 1 )
+material = SubResource( 34 )
+position = Vector2( 609, 423 )
+scale = Vector2( 5.28906, 6.39844 )
+texture = ExtResource( 2 )
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2( 320, 180 )
+current = true
+
+[connection signal="timeout" from="PlayerShip/Reload" to="." method="_on_Reload_timeout"]
+[connection signal="timeout" from="PlayerShip/Reload_Bullet" to="." method="_on_Reload_Bullet_timeout"]
+[connection signal="tween_all_completed" from="Enemy/EnemyPosTween" to="." method="_on_EnemyPosTween_tween_all_completed"]
+[connection signal="timeout" from="Enemy/ReloadEnemy" to="." method="_on_ReloadEnemy_timeout"]
