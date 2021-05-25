@@ -9,7 +9,7 @@ Please check out the YouTube videos on my channel for a explanation of the proje
 
 [**YouTube Channel**](https://www.youtube.com/c/Picster)
 
-[**Advanced Trail Effects**](https://www.youtube.com/watch?v=???)
+[**Advanced Trail Effects**](https://www.youtube.com/watch?v=bqyDm0MmGqg)
 
 
 # License
